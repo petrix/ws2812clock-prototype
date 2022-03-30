@@ -1,6 +1,9 @@
 import "./style.scss";
+let checkBox = document.createElement("input");
+let highPicker = document.createElement("input");
+let lowPicker = document.createElement("input");
 
-document.addEventListener("DOMContentLoaded", ready());
+document.addEventListener("DOMContentLoaded", ready);
 
 function ready() {
     let mainField = document.createElement("div");
@@ -35,6 +38,48 @@ function ready() {
         // }
     }
 
+    // let lowPicker = document.createElement("input");
+    lowPicker.id = "lowPicker";
+    lowPicker.type = "color";
+    let lowPickLabel = document.createElement("label");
+    lowPickLabel.setAttribute("for", "lowPicker");
+    lowPickLabel.innerText = "lowPicker";
+    document.body.appendChild(lowPickLabel);
+    document.body.appendChild(lowPicker);
+    // let highPicker = document.createElement("input");
+    highPicker.id = "highPicker";
+    highPicker.type = "color";
+    let highPickLabel = document.createElement("label");
+    highPickLabel.setAttribute("for", "highPicker");
+    highPickLabel.innerText = "highPicker";
+    document.body.appendChild(highPickLabel);
+    document.body.appendChild(highPicker);
+    lowPicker.value = "#0b3c0f";
+    highPicker.value = "#690000";
+    // let checkBox = document.createElement("input");
+    checkBox.type = "checkbox";
+    checkBox.id = "hueRotation";
+    let chkBoxLabel = document.createElement("label");
+    chkBoxLabel.setAttribute("for", "hueRotation");
+    chkBoxLabel.innerText = "Hue Rotation";
+    document.body.appendChild(chkBoxLabel);
+    document.body.appendChild(checkBox);
+    lowPicker.addEventListener("change", e => {
+        let hsl = RGBtoHSL(e.target.value);
+        document.querySelector("#lowColor").innerText = `.halfActive > div {color: hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%);}`;
+
+        // console.log(hsl);
+    });
+    highPicker.addEventListener("change", e => {
+        let hsl = RGBtoHSL(e.target.value);
+        document.querySelector("#highColor").innerText = `.active > div {color: hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%);}`;
+
+        console.log(e.target.value);
+    });
+    checkBox.addEventListener("change", e => {
+        if (e.target.checked) {}
+        console.log(e.target.checked);
+    });
     loop();
 }
 let bigDigit = [
@@ -86,5 +131,59 @@ function loop() {
         });
         let currentDigit = document.querySelector(`.mainField>.b${Math.floor(d.sec / 15)} > div.digit${d.sec}`);
         currentDigit.classList.add("active");
+        if (checkBox.checked) {
+            let lowHSL = RGBtoHSL(document.querySelector("#lowPicker").value);
+            let highHSL = RGBtoHSL(document.querySelector("#highPicker").value);
+            document.querySelector("#lowColor").innerText = `.halfActive > div {color: hsl(${lowHSL.h + (d.sec / 60) * 360}, ${
+				lowHSL.s
+			}%, ${lowHSL.l}%);}`;
+            document.querySelector("#highColor").innerText = `.active > div {color: hsl(${highHSL.h + (d.sec / 60) * 360}, ${
+				highHSL.s
+			}%, ${highHSL.l}%);}`;
+        }
     }, 500);
 }
+
+const RGBtoHSL = function(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+    var r = parseInt(result[1], 16);
+    var g = parseInt(result[2], 16);
+    var b = parseInt(result[3], 16);
+
+    (r /= 255), (g /= 255), (b /= 255);
+    var max = Math.max(r, g, b),
+        min = Math.min(r, g, b);
+    var h,
+        s,
+        l = (max + min) / 2;
+
+    if (max == min) {
+        h = s = 0; // achromatic
+    } else {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+        }
+        h /= 6;
+    }
+
+    s = s * 100;
+    s = Math.round(s);
+    l = l * 100;
+    l = Math.round(l);
+    h = Math.round(360 * h);
+
+    var colorInHSL = "hsl(" + h + ", " + s + "%, " + l + "%)";
+    // console.log(colorInHSL);
+    return { h, s, l };
+};
