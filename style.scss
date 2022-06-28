@@ -1,13 +1,15 @@
 @import "./normalize.scss";
 @import "./ds-digital.scss";
+
 body {
-    background-color: #222;
+    background-color: #111;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     overflow: hidden;
+
     &>.mainField {
         display: flex;
         flex-direction: row;
@@ -16,6 +18,7 @@ body {
         // min-width: 70%;
         // max-width: 70%;
         justify-content: space-evenly;
+
         &>.bigDigit {
             // width: 100px;
             // height: 100px;
@@ -39,9 +42,10 @@ body {
             grid-template-columns: repeat(3, 1fr);
             grid-auto-flow: column;
             padding: 1em;
+
             &>div {
                 user-select: none;
-                text-shadow: 0 0 0.01em #242424;
+                text-shadow: 0 0 0.01em #151515;
                 // margin: 0;
                 // padding: -50px;
                 // transition: color 0.3s;
@@ -51,15 +55,18 @@ body {
                 font-size: 6em;
                 letter-spacing: -0.1em;
                 color: transparent;
+
                 &.halfActive {
                     color: #0b3c0f;
                 }
+
                 &.active {
                     color: #690000;
                 }
             }
         }
     }
+
     &>label {
         color: rgb(92, 92, 92);
         font-size: 2em;
